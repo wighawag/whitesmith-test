@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      typescript:
+        specifier: ^5.7.0
+        version: 5.9.3
       whitesmith:
         specifier: ^0.0.2
         version: 0.0.2
@@ -204,6 +207,11 @@ packages:
   simple-git@3.33.0:
     resolution: {integrity: sha512-D4V/tGC2sjsoNhoMybKyGoE+v8A60hRawKQ1iFRA1zwuDgGZCBJ4ByOzZ5J8joBbi4Oam0qiPH+GhzmSBwbJng==}
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   whitesmith@0.0.2:
     resolution: {integrity: sha512-FssuDSNOYW65eAqzqFFzahFoUZAfTgOBNBBPg/p3a01pu8o9MRIx96bjlfoTtLradsAYk+09ODDW/s6yW/DqYQ==}
     hasBin: true
@@ -353,6 +361,8 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
+
+  typescript@5.9.3: {}
 
   whitesmith@0.0.2:
     dependencies:
