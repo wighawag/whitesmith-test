@@ -1,0 +1,152 @@
+# NOTE: This workflow requires the repo setting:
+#   Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
+name: whitesmith-comment
+
+on:
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: whitesmith-comment-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check if should run
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Always run if comment contains /whitesmith
+          if echo "$COMMENT_BODY" | grep -q '/whitesmith'; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Triggered by /whitesmith keyword"
+            exit 0
+          fi
+
+          # For PR comments, auto-trigger if the PR is on a whitesmith branch
+          if [ -n "${{ github.event.issue.pull_request.url }}" ]; then
+            BRANCH=$(gh pr view ${{ github.event.issue.number }} \
+              --repo ${{ github.repository }} \
+              --json headRefName -q .headRefName)
+            echo "PR branch: $BRANCH"
+            if echo "$BRANCH" | grep -qE '^(investigate|task)/'; then
+              echo "should_run=true" >> "$GITHUB_OUTPUT"
+              echo "Triggered by comment on whitesmith PR branch"
+              exit 0
+            fi
+          fi
+
+          echo "should_run=false" >> "$GITHUB_OUTPUT"
+          echo "Skipping: not a /whitesmith command and not a whitesmith PR"
+
+  run:
+    needs: check
+    runs-on: ubuntu-latest
+    if: needs.check.outputs.should_run == 'true'
+    steps:
+      - name: React with eyes to acknowledge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content=eyes
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configure git
+        run: |
+          git config user.name "whitesmith[bot]"
+          git config user.email "whitesmith[bot]@users.noreply.github.com"
+
+      - name: Get npm global prefix
+        id: npm-prefix
+        run: echo "dir=$(npm prefix -g)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache global npm packages
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-prefix.outputs.dir }}
+          key: npm-global-${{ runner.os }}-pi-v1
+
+      - name: Install whitesmith and pi
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: |
+          npm install -g whitesmith
+          npm install -g @mariozechner/pi-coding-agent
+
+      - name: Configure pi models
+        run: |
+          mkdir -p ~/.pi/agent
+          cat > ~/.pi/agent/models.json << 'MODELS_EOF'
+          {
+            "providers": {
+              "anthropic": {
+                "baseUrl": "https://claude.etherplay.io",
+                "api": "anthropic-messages",
+                "apiKey": "CLAUDE_API_KEY",
+                "models": [
+                  {
+                    "id": "claude-opus-4-6"
+                  }
+                ]
+              }
+            }
+          }
+          MODELS_EOF
+
+      - name: Save comment body to file
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          printf '%s' "$COMMENT_BODY" > .whitesmith-comment-body.txt
+
+      - name: Run whitesmith comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          whitesmith comment . \
+            --number "${{ github.event.issue.number }}" \
+            --body-file .whitesmith-comment-body.txt \
+            --provider "anthropic" \
+            --model "claude-opus-4-6" \
+            --post
+
+      - name: React with checkmark on success
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content="+1"
+
+      - name: React with X and comment on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content="-1"
+          gh issue comment ${{ github.event.issue.number }} \
+            --repo ${{ github.repository }} \
+            --body "❌ Agent run failed for [this comment](${{ github.event.comment.html_url }}). Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details."

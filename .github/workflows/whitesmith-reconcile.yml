@@ -1,0 +1,43 @@
+name: whitesmith-reconcile
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  reconcile:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Get npm global prefix
+        id: npm-prefix
+        run: echo "dir=$(npm prefix -g)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache global npm packages
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-prefix.outputs.dir }}
+          key: npm-global-${{ runner.os }}-whitesmith-v1
+
+      - name: Install whitesmith
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm install -g whitesmith
+
+      - name: Reconcile
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: whitesmith reconcile .
