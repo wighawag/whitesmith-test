@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       whitesmith:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^0.0.3
+        version: 0.0.3
 
 packages:
 
@@ -204,8 +204,8 @@ packages:
   simple-git@3.33.0:
     resolution: {integrity: sha512-D4V/tGC2sjsoNhoMybKyGoE+v8A60hRawKQ1iFRA1zwuDgGZCBJ4ByOzZ5J8joBbi4Oam0qiPH+GhzmSBwbJng==}
 
-  whitesmith@0.0.2:
-    resolution: {integrity: sha512-FssuDSNOYW65eAqzqFFzahFoUZAfTgOBNBBPg/p3a01pu8o9MRIx96bjlfoTtLradsAYk+09ODDW/s6yW/DqYQ==}
+  whitesmith@0.0.3:
+    resolution: {integrity: sha512-I/PDgx9GvJAIIfMP8mcYLJ0YAdCvXc5ADOuZCyYXsncKdTYQ2Lh3z/KCFvMNAhEMJpOctnGOdcU4F4CgnsHOSA==}
     hasBin: true
 
   yaml@2.8.3:
@@ -354,7 +354,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  whitesmith@0.0.2:
+  whitesmith@0.0.3:
     dependencies:
       '@inquirer/prompts': 8.3.2
       commander: 14.0.3
