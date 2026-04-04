@@ -25,12 +25,12 @@ runs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.npm-prefix.outputs.dir }}
-        key: whitesmith-${{ runner.os }}-v1
+        key: whitesmith-${{ runner.os }}-0.0.4
 
     - name: Install whitesmith and pi
       if: steps.npm-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: npm install -g whitesmith @mariozechner/pi-coding-agent
+      run: npm install -g whitesmith@0.0.4 @mariozechner/pi-coding-agent
 
     - name: Configure pi models
       shell: bash

@@ -11,6 +11,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.1",
   "devDependencies": {
-    "whitesmith": "^0.0.3"
+    "whitesmith": "^0.0.4"
   }
 }
