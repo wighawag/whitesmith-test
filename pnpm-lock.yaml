@@ -12,8 +12,8 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
       whitesmith:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.5
+        version: 0.0.5
 
 packages:
 
@@ -212,8 +212,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  whitesmith@0.0.4:
-    resolution: {integrity: sha512-7alv8z9BUn/5o0Q3W8/MYgwADdsxInKESx1mBYbNMYzgvSf52LOFbivhB54lqxiuEhwKiLxBksmq0kQFasFzrA==}
+  whitesmith@0.0.5:
+    resolution: {integrity: sha512-zG+xGeWMg5JrwT1nQhRtPPOAlxTTUPqzOdsotXhGqF/8vVe2jrQ65zl5JtFKiJTgIwnOACcnAqNqXHrC4vLhiQ==}
     hasBin: true
 
   yaml@2.8.3:
@@ -364,7 +364,7 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  whitesmith@0.0.4:
+  whitesmith@0.0.5:
     dependencies:
       '@inquirer/prompts': 8.3.2
       commander: 14.0.3

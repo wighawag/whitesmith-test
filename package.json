@@ -17,6 +17,6 @@
   "packageManager": "pnpm@10.28.1",
   "devDependencies": {
     "typescript": "^5.7.0",
-    "whitesmith": "^0.0.4"
+    "whitesmith": "^0.0.5"
   }
 }
