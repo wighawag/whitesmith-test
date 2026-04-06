@@ -15,8 +15,8 @@ importers:
         specifier: ^5.7.0
         version: 5.9.3
       whitesmith:
-        specifier: ^0.0.8
-        version: 0.0.8(@types/node@25.5.2)
+        specifier: ^0.0.9
+        version: 0.0.9(@types/node@25.5.2)
 
 packages:
 
@@ -200,8 +200,8 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
-  whitesmith@0.0.8:
-    resolution: {integrity: sha512-k57631MRHsTi7ONdbLXa3w3um/4yoqh0LF5qkqRy6oaYt8UVn5P2uJ03Mi7Pyi1gZ5QCakYafgrfvE9tklUh3g==}
+  whitesmith@0.0.9:
+    resolution: {integrity: sha512-hWTonjWekRzKd2+XQHX2FPmE1mabNMfdSg28A6xCb9ti6huglz5Loa73FOQEJfdElXLrX+aKIBWHjQKZc7s9vg==}
     hasBin: true
 
   yaml@2.8.3:
@@ -364,7 +364,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  whitesmith@0.0.8(@types/node@25.5.2):
+  whitesmith@0.0.9(@types/node@25.5.2):
     dependencies:
       '@inquirer/prompts': 8.3.2(@types/node@25.5.2)
       commander: 14.0.3
